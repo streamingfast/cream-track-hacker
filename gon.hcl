@@ -4,7 +4,6 @@ source = ["./dist/tracker-osx_darwin_amd64/tracker"]
 bundle_id = "io.streamingfast.cream-track-hacker.cmd"
 
 apple_id {
-  username = "@env:AC_USERNAME"
   password = "@env:AC_PASSWORD"
 }
 

@@ -1,11 +1,16 @@
 project_name: cream-track-hacker
 
+env_files:
+  github_token: ~/.config/goreleaser/github_token
+
 release:
   github:
     owner: streamingfast
     name: cream-track-hacker
   draft: true
   name_template: '{{.Tag}}'
+  extra_files:
+    - glob: ./release/**/*
 
 changelog:
   sort: asc
@@ -65,5 +70,4 @@ signs:
       - --detached
     signature: ${artifact}.sig
     artifacts: checksum
-env_files:
-  github_token: ~/.config/goreleaser/github_token
+
