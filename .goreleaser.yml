@@ -1,21 +1,42 @@
 project_name: cream-track-hacker
+
 release:
   github:
     owner: streamingfast
     name: cream-track-hacker
   draft: true
   name_template: '{{.Tag}}'
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+
 builds:
-- env:
-  - CGO_ENABLED=0
-  main: ./cmd/tracker
+- id: tracker
   binary: tracker
+  main: ./cmd/tracker
+  env:
+  - CGO_ENABLED=0
   goos:
     - linux
-    - darwin
     - windows
   goarch:
     - amd64
+- id: tracker-osx
+  binary: tracker
+  main: ./cmd/tracker
+  env:
+  - CGO_ENABLED=0
+  goos:
+    - darwin
+  goarch:
+    - amd64
+  hooks:
+    post: gon gon.hcl
+
 archives:
 - replacements:
     darwin: macOS
@@ -25,16 +46,13 @@ archives:
   files:
   - LICENSE
   - README.md
+
 checksum:
   name_template: 'checksums.txt'
+
 snapshot:
   name_template: "{{ .Tag }}-next"
-changelog:
-  sort: asc
-  filters:
-    exclude:
-    - '^docs:'
-    - '^test:'
+
 signs:
   - cmd: keybase
     args:
