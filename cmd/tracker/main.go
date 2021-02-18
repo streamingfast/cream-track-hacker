@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"flag"
 	"fmt"
 	"io"
@@ -21,15 +22,18 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/oauth"
 )
 
 var flagAddresses = flag.String("a", "0x560a8e3b79d23b0a525e15c6f3486c6a293ddad2, 0x905315602ed9a854e325f692ff82f58799beab57", "Specify the list of addresses to track, comma separated")
 var flagCursorFile = flag.String("c", "cursor.txt", "The file containing the last cursor ever seen, when present, the cursor in it will be used to reconnect to last seen block")
+var flagEndpoint = flag.String("e", "api.streamingfast.io:443", "The endpoint to connect the stream of blocks to")
 var flagStatusFrequency = flag.Duration("f", 30*time.Second, "How often current state is logged to logger so it's possible to stream how the stream is behaving")
-var flagStartBlock = flag.Int64("s", 11847495, "The block num to start from where no previous cursor exists")
+var flagStartBlock = flag.Int64("s", 1185000, "The block num to start from when no previous cursor exists")
+var flagSkipSSLVerify = flag.Bool("i", false, "When set to true, skips SSL certificate verification")
 
-var zlog = logging.NewSimpleLogger("tracker", "github.com/dfuse-io/cream-track-hacker")
+var zlog = logging.NewSimpleLogger("tracker", "github.com/streaminfast/cream-track-hacker")
 
 func usage() string {
 	return `usage: tracker
@@ -50,13 +54,17 @@ func main() {
 
 	apiKey := os.Getenv("STREAMINGFAST_API_KEY")
 	ensure(apiKey != "", errorUsage("the environment variable STREAMINGFAST_API_KEY must be set to a valid dfuse API key value"))
-	hostname := "api.streamingfast.io"
 	addresses, celAddresses, err := parseAddressesFlag(*flagAddresses)
 
-	dfuse, err := dfuse.NewClient(hostname, apiKey)
+	dfuse, err := dfuse.NewClient(*flagEndpoint, apiKey)
 	noError(err, "unable to create client")
 
-	conn, err := dgrpc.NewExternalClient(hostname + ":443")
+	var dialOptions []grpc.DialOption
+	if *flagSkipSSLVerify {
+		dialOptions = []grpc.DialOption{grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{InsecureSkipVerify: true}))}
+	}
+
+	conn, err := dgrpc.NewExternalClient(*flagEndpoint, dialOptions...)
 	noError(err, "unable to create external gRPC client")
 
 	cursor, err := loadCursor(*flagCursorFile)
@@ -97,7 +105,7 @@ func main() {
 
 			// Those will be transaction that matches our filter (Ether from/to, ERC20 Transfer from/to)
 			for _, trxTrace := range block.TransactionTraces {
-				notifyTransactionSeen(block, trxTrace)
+				notifyTransactionSeen(block, trxTrace, addresses)
 			}
 
 			cursor = newCursor
@@ -118,8 +126,29 @@ func main() {
 	}
 }
 
-func notifyTransactionSeen(block *pbcodec.Block, trxTrace *pbcodec.TransactionTrace) {
-	fmt.Printf("A transaction touched one of our tracked account in block #%d: https://etherscan.io/tx/%s\n", block.Number, eth.Hash(trxTrace.Hash).Pretty())
+func notifyTransactionSeen(block *pbcodec.Block, trxTrace *pbcodec.TransactionTrace, trackedAddresses []string) {
+	trackedSet := addressSet(trackedAddresses)
+
+	fmt.Printf("Matching transaction %[1]s in block #%d (Links https://ethq.app/tx/%[1]s ,https://etherscan.io/tx/%[1]s)\n", eth.Hash(trxTrace.Hash).Pretty(), block.Number)
+	for i, call := range trxTrace.Calls {
+		callFromTracked := eth.Address(call.Caller).Pretty()
+		if trackedSet.contains(callFromTracked) {
+			callFromTracked += " *tracked*"
+		}
+
+		callToTracked := eth.Address(call.Address).Pretty()
+		if trackedSet.contains(callToTracked) {
+			callToTracked += " *tracked*"
+		}
+
+		etherTransfer := ""
+		value := call.Value.Native()
+		if value.Sign() > 0 {
+			etherTransfer = fmt.Sprintf(", transferred %s", eth.ETHToken.AmountBig(value).Format(4))
+		}
+
+		fmt.Printf(" Internal call #%d %s -> %s matched%s\n", i, callFromTracked, callToTracked, etherTransfer)
+	}
 }
 
 func loadCursor(filePath string) (string, error) {

@@ -2,10 +2,15 @@ package pbcodec
 
 import (
 	"encoding/hex"
+	"math/big"
 
 	"github.com/dfuse-io/bstream"
 	"github.com/dfuse-io/jsonpb"
 )
+
+var b0 = big.NewInt(0)
+var b18 = big.NewInt(18)
+var f18 = big.NewFloat(18)
 
 func (b *Block) ID() string {
 	return hex.EncodeToString(b.Hash)
@@ -31,4 +36,14 @@ func (m *BigInt) MarshalJSON() ([]byte, error) {
 
 func (m *BigInt) MarshalJSONPB(marshaler *jsonpb.Marshaler) ([]byte, error) {
 	return m.MarshalJSON()
+}
+
+func (m *BigInt) Native() *big.Int {
+	if m == nil {
+		return b0
+	}
+
+	z := new(big.Int)
+	z.SetBytes(m.Bytes)
+	return z
 }
