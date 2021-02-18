@@ -1,15 +1,15 @@
-project_name: streamingfast-client
+project_name: cream-tracker-hacker
 release:
   github:
     owner: streamingfast
-    name: streamingfast-client
+    name: cream-tracker-hacker
   draft: true
   name_template: '{{.Tag}}'
 builds:
 - env:
   - CGO_ENABLED=0
-  main: ./cmd/sf
-  binary: sf
+  main: ./cmd/tracker
+  binary: tracker
   goos:
     - linux
     - darwin
