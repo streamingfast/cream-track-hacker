@@ -36,7 +36,7 @@ or WeChat message, etc.
 
 The file `cursor.txt` saved in the current directory must be kept and persisted, it's the marker
 that tells the stream where to start back at. If the file is non existant, the stream starts by default
-from block #11 850 00. If it starts from that location, it will take sometime for the stream to catch
+from block #11 878 000. If it starts from that location, it will take sometime for the stream to catch
 up with live block since it will need to inspect all blocks between the default start block and
 current head block. Try to save and backup the `cursor.txt` to avoid long delays before being live
 and tracking actual real-time transactions.

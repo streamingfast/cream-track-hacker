@@ -30,7 +30,7 @@ var flagAddresses = flag.String("a", "0x560a8e3b79d23b0a525e15c6f3486c6a293ddad2
 var flagCursorFile = flag.String("c", "cursor.txt", "The file containing the last cursor ever seen, when present, the cursor in it will be used to reconnect to last seen block")
 var flagEndpoint = flag.String("e", "api.streamingfast.io:443", "The endpoint to connect the stream of blocks to")
 var flagStatusFrequency = flag.Duration("f", 30*time.Second, "How often current state is logged to logger so it's possible to stream how the stream is behaving")
-var flagStartBlock = flag.Int64("s", 1185000, "The block num to start from when no previous cursor exists")
+var flagStartBlock = flag.Int64("s", 11878000, "The block num to start from when no previous cursor exists")
 var flagSkipSSLVerify = flag.Bool("i", false, "When set to true, skips SSL certificate verification")
 
 var zlog = logging.NewSimpleLogger("tracker", "github.com/streaminfast/cream-track-hacker")
