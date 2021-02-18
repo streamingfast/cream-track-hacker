@@ -4,10 +4,19 @@ source = ["./dist/tracker-osx_darwin_amd64/tracker"]
 bundle_id = "io.streamingfast.project.id"
 
 apple_id {
-  username = "@env:AC_EMAIL"
+  username = "@env:AC_USERNAME"
   password = "@env:AC_PASSWORD"
 }
 
 sign {
   application_identity = "Developer ID Application: dfuse Platform Inc. (ZG686LRL8C)"
+}
+
+dmg {
+    output_path = "./release/darwin/tracker.dmg"
+    volume_name = "tracker"
+}
+
+zip {
+    output_path = "./release/darwin/tracker.zip"
 }
