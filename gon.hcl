@@ -1,7 +1,7 @@
 # The path follows a pattern
 # ./dist/BUILD-ID_TARGET/BINARY-NAME
 source = ["./dist/tracker-osx_darwin_amd64/tracker"]
-bundle_id = "io.streamingfast.project.id"
+bundle_id = "io.streamingfast.cream-track-hacker.cmd"
 
 apple_id {
   username = "@env:AC_USERNAME"
