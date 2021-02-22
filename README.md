@@ -1,6 +1,6 @@
 # CREAM Tracking Hacker Transactions
 
-## Getting started
+## Getting Started
 
 1. Get an API key from https://streamingfast.io
 1. Download a release from [the releases](https://github.com/streamingfast/cream-track-hacker/releases)

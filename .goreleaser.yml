@@ -59,15 +59,5 @@ snapshot:
   name_template: "{{ .Tag }}-next"
 
 signs:
-  - cmd: keybase
-    args:
-      - sign
-      - --infile
-      - $artifact
-      - --binary
-      - --outfile
-      - $signature
-      - --detached
-    signature: ${artifact}.sig
-    artifacts: checksum
-
+  - artifacts: checksum
+    args: ["--batch", "-u", "{{ .Env.GPG_FINGERPRINT }}", "--output", "${signature}", "--detach-sign", "${artifact}"]
