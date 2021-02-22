@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	eth "github.com/dfuse-io/eth-go"
 )
 
 func parseAddressesFlag(in string) (out []string, celFiler string, err error) {
@@ -21,7 +19,7 @@ func parseAddressesFlag(in string) (out []string, celFiler string, err error) {
 	celParts := make([]string, len(parts))
 
 	for i, part := range parts {
-		address, err := eth.NewAddress(strings.TrimSpace(part))
+		address, err := newAddress(strings.TrimSpace(part))
 		if err != nil {
 			return nil, "", fmt.Errorf("invalid address %q: %w", part, err)
 		}

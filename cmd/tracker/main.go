@@ -15,7 +15,6 @@ import (
 	dfuse "github.com/dfuse-io/client-go"
 	pbcodec "github.com/dfuse-io/cream-track-hacker/pb/dfuse/ethereum/codec/v1"
 	"github.com/dfuse-io/dgrpc"
-	eth "github.com/dfuse-io/eth-go"
 	"github.com/dfuse-io/logging"
 	pbbstream "github.com/dfuse-io/pbgo/dfuse/bstream/v1"
 	"github.com/golang/protobuf/ptypes"
@@ -129,14 +128,14 @@ func main() {
 func notifyTransactionSeen(block *pbcodec.Block, trxTrace *pbcodec.TransactionTrace, trackedAddresses []string) {
 	trackedSet := addressSet(trackedAddresses)
 
-	fmt.Printf("Matching transaction %[1]s in block #%d (Links https://ethq.app/tx/%[1]s ,https://etherscan.io/tx/%[1]s)\n", eth.Hash(trxTrace.Hash).Pretty(), block.Number)
+	fmt.Printf("Matching transaction %[1]s in block #%d (Links https://ethq.app/tx/%[1]s ,https://etherscan.io/tx/%[1]s)\n", hash(trxTrace.Hash).Pretty(), block.Number)
 	for i, call := range trxTrace.Calls {
-		callFromTracked := eth.Address(call.Caller).Pretty()
+		callFromTracked := address(call.Caller).Pretty()
 		if trackedSet.contains(callFromTracked) {
 			callFromTracked += " *tracked*"
 		}
 
-		callToTracked := eth.Address(call.Address).Pretty()
+		callToTracked := address(call.Address).Pretty()
 		if trackedSet.contains(callToTracked) {
 			callToTracked += " *tracked*"
 		}
@@ -144,7 +143,7 @@ func notifyTransactionSeen(block *pbcodec.Block, trxTrace *pbcodec.TransactionTr
 		etherTransfer := ""
 		value := call.Value.Native()
 		if value.Sign() > 0 {
-			etherTransfer = fmt.Sprintf(", transferred %s", eth.ETHToken.AmountBig(value).Format(4))
+			etherTransfer = fmt.Sprintf(", transferred %s ETH", formatTokenAmount(value, 18, 4))
 		}
 
 		fmt.Printf(" Internal call #%d %s -> %s matched%s\n", i, callFromTracked, callToTracked, etherTransfer)
