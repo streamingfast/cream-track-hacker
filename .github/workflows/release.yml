@@ -18,7 +18,6 @@ jobs:
         run: |
           echo ::set-output name=GORELEASER_COMMAND::$([[ $GITHUB_REF =~ "refs/tags" ]] && echo "release" || echo "build")
           echo ::set-output name=GORELEASER_DRYRUN::$([[ $GITHUB_REF =~ "refs/tags" ]] && echo "" || echo "--snapshot")
-          echo ::set-output name=GORELEASER_VERSION::$([[ $GITHUB_REF =~ "refs/tags" ]] && echo ${GITHUB_REF#refs/tags/} || echo "${GITHUB_SHA:0:7}")
 
       - name: Set up Go
         uses: actions/setup-go@v2
@@ -70,7 +69,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
         with:
-          version: ${{ steps.env_config.outputs.GORELEASER_VERSION }}
+          version: latest
           args: ${{ steps.env_config.outputs.GORELEASER_DRYRUN }} --rm-dist ${{ steps.env_config.outputs.GORELEASER_COMMAND }}
 
       # - name: Sign the mac binaries with Gon
