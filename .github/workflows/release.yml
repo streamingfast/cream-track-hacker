@@ -70,7 +70,7 @@ jobs:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
         with:
           version: latest
-          args: ${{ steps.env_config.outputs.GORELEASER_DRYRUN }} --rm-dist ${{ steps.env_config.outputs.GORELEASER_COMMAND }}
+          args: ${{ steps.env_config.outputs.GORELEASER_COMMAND }} ${{ steps.env_config.outputs.GORELEASER_DRYRUN }} --rm-dist
 
       # - name: Sign the mac binaries with Gon
       #   env:
