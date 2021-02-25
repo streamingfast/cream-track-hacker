@@ -12,11 +12,6 @@ sign {
   application_identity = "Developer ID Application: dfuse Platform Inc. (ZG686LRL8C)"
 }
 
-dmg {
-    output_path = "./release/darwin/tracker.dmg"
-    volume_name = "tracker"
-}
-
 zip {
-    output_path = "./release/darwin/tracker.zip"
+  output_path = "./release/darwin/tracker.zip"
 }

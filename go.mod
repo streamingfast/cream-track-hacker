@@ -1,4 +1,4 @@
-module github.com/dfuse-io/cream-track-hacker
+module github.com/streamingfast/cream-track-hacker
 
 go 1.14
 
