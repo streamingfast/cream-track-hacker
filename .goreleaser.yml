@@ -40,7 +40,8 @@ builds:
   goarch:
     - amd64
   hooks:
-    post: gon gon.hcl
+    post:
+      - gon gon.sign.hcl
 
 archives:
 - replacements:
@@ -48,6 +49,9 @@ archives:
     linux: linux
     386: i386
     amd64: x86_64
+  format_overrides:
+    - goos: darwin
+      format: zip
   files:
   - LICENSE
   - README.md
@@ -59,5 +63,32 @@ snapshot:
   name_template: "{{ .Tag }}-next"
 
 signs:
-  - artifacts: checksum
-    args: ["--batch", "-u", "{{ .Env.GPG_FINGERPRINT }}", "--output", "${signature}", "--detach-sign", "${artifact}"]
+  - id: gpg
+    artifacts: checksum
+    args: [
+      "--pinentry-mode", "loopback",
+      "--passphrase", "{{ .Env.GPG_PASSPHRASE }}",
+      "-u", "{{ .Env.GPG_FINGERPRINT }}",
+      "--output", "${signature}",
+      "--detach-sign", "${artifact}",
+    ]
+  - id: notarize
+    artifacts: all
+    signature: "${artifact}.zip"
+    ids:
+    - tracker-osx
+    cmd: sh
+    args:
+      - -c
+      - |
+        # The Gon notarization process has no way to inject it the right final versionned packaged
+        # name to notarize. So, from this "inline" script we move the package to a known file location,
+        # notarize it and then we move it back to its correct location.
+        #
+        # Don't try to use Bash variables, it doesn't work properly (Goreleaser replaces them up-front)
+
+        mv "dist/{{ .ProjectName }}_{{ .Version }}_macOS_x86_64.zip" dist/tracker.zip
+        gon gon.notarize.hcl
+        mv dist/tracker.zip dist/"{{ .ProjectName }}_{{ .Version }}_macOS_x86_64.zip"
+
+
