@@ -68,6 +68,7 @@ jobs:
           AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         with:
           version: latest
           args: ${{ steps.env_config.outputs.GORELEASER_COMMAND }} ${{ steps.env_config.outputs.GORELEASER_DRYRUN }} --rm-dist
