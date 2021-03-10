@@ -72,23 +72,29 @@ signs:
       "--output", "${signature}",
       "--detach-sign", "${artifact}",
     ]
-  - id: notarize
-    artifacts: all
-    signature: "{{ .ProjectName }}_{{ .Version }}_macOS_x86_64.zip"
-    ids:
-    - tracker-osx
-    cmd: sh
-    args:
-      - -c
-      - |
-        # The Gon notarization process has no way to inject it the right final versionned packaged
-        # name to notarize. So, from this "inline" script we move the package to a known file location,
-        # notarize it and then we move it back to its correct location.
-        #
-        # Don't try to use Bash variables, it doesn't work properly (Goreleaser replaces them up-front)
+  # Disabling notarization because I was unable to make it fit in the Goreleaser flow. Works greate
+  # until the GitHub release is uploaded at which point it complains about `${artifact}.zip` (which resolves
+  # to `dist/checksums.txt.zip`) does not exists, which is true.
+  #
+  # See https://github.com/goreleaser/goreleaser/discussions/2102
+  #
+  # - id: notarize
+  #   artifacts: all
+  #   signature: "${artifact}.zip"
+  #   ids:
+  #   - tracker-osx
+  #   cmd: sh
+  #   args:
+  #     - -c
+  #     - |
+  #       # The Gon notarization process has no way to inject it the right final versionned packaged
+  #       # name to notarize. So, from this "inline" script we move the package to a known file location,
+  #       # notarize it and then we move it back to its correct location.
+  #       #
+  #       # Don't try to use Bash variables, it doesn't work properly (Goreleaser replaces them up-front)
 
-        mv "dist/{{ .ProjectName }}_{{ .Version }}_macOS_x86_64.zip" dist/tracker.zip
-        gon gon.notarize.hcl
-        mv dist/tracker.zip dist/"{{ .ProjectName }}_{{ .Version }}_macOS_x86_64.zip"
+  #       mv "dist/{{ .ProjectName }}_{{ .Version }}_macOS_x86_64.zip" dist/tracker.zip
+  #       gon gon.notarize.hcl
+  #       mv dist/tracker.zip dist/"{{ .ProjectName }}_{{ .Version }}_macOS_x86_64.zip"
 
 
