@@ -74,7 +74,7 @@ signs:
     ]
   - id: notarize
     artifacts: all
-    signature: "${artifact}.zip"
+    signature: "{{ .ProjectName }}_{{ .Version }}_macOS_x86_64.zip"
     ids:
     - tracker-osx
     cmd: sh

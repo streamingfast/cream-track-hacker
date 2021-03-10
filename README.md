@@ -52,6 +52,10 @@ go run ./cmd/tracker --help
 To list available flags to tweak default start block, tracked addresses, status frequency and cursor
 file location.
 
+### Release
+
+
+
 ## License
 
 [Apache 2.0](./LICENSE)
