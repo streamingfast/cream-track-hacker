@@ -318,6 +318,7 @@ github.com/streamingfast/opaque v0.0.0-20210809210154-b964592beb5d/go.mod h1:Tio
 github.com/streamingfast/shutter v1.4.1-0.20200319040708-c809eec458e6/go.mod h1:2mLf0v+n8J8NI7F6L6avYaRNfa6XECB6CP3WO8rRx88=
 github.com/streamingfast/shutter v1.4.1 h1:a0HSmmu8vYxR4ynIv1+tH49jrv7gyenNtOJBsmm3OHA=
 github.com/streamingfast/shutter v1.4.1/go.mod h1:/BxCU/ucC6WUyqmLbWpDhznS6Yy1HDblsstEBnTyr+4=
+github.com/streamingfast/shutter v1.4.1/go.mod h1:/BxCU/ucC6WUyqmLbWpDhznS6Yy1HDblsstEBnTyr+4=
 github.com/streamingfast/shutter v1.5.0 h1:NpzDYzj0HVpSiDJVO/FFSL6QIK/YKOxY0gJAtyaTOgs=
 github.com/streamingfast/shutter v1.5.0/go.mod h1:B/T6efqdeMGbGwjzPS1ToXzYZI4kDzI5/u4I+7qbjY8=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
