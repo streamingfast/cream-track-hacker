@@ -5,7 +5,7 @@ import (
 	"math/big"
 
 	"github.com/dfuse-io/bstream"
-	"github.com/dfuse-io/jsonpb"
+	"github.com/streamingfast/jsonpb"
 )
 
 var b0 = big.NewInt(0)
